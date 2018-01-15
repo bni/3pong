@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<body style="margin: 0">
+  <canvas id="c"></canvas>
+
+  <script>
+    const w=50;
+    const l=200;
+    const s=100;
+    const o=20;
+
+    let a=0;
+    let b=0;
+
+    const st = new Date().getTime();
+
+    const update = (c, x) => {
+      c.width|=0;
+
+      x.fillRect(o,a,w,l);
+      x.fillRect(c.width-w-o,b,w,l);
+
+      const t = (new Date().getTime()-st)/1000;
+      const ts = Math.round(t*s);
+      x.fillRect(ts,ts,w,w);
+
+      requestAnimationFrame(() => {
+        update(c, x);
+      });
+    };
+
+    const start = () => {
+      const c = document.getElementById("c");
+      c.width=window.innerWidth;
+      c.height=window.innerHeight;
+
+      const x = c.getContext("2d");
+
+      c.onmousemove = (d) => {
+        const cx = d.clientX * c.width / c.clientWidth;
+        const cy = d.clientY * c.height / c.clientHeight;
+
+        cx < c.width/2 ? a=cy-w*2 : b=cy-w*2;
+      };
+
+      requestAnimationFrame(() => {
+        update(c, x);
+      });
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      start();
+    }, false);
+  </script>
+</body>
+</html>
