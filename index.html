@@ -4,26 +4,24 @@
   <canvas id="c"></canvas>
 
   <script>
-    const w=50;
-    const l=200;
-    const s=100;
-    const o=20;
+    const speed = 10;
 
-    let left=0;
-    let bottom=0;
-    let right=0;
+    const w = 50;
+    const l = 200;
+    const o = 20;
 
-    const speed=10;
+    let left = 0;
+    let bottom = 0;
+    let right = 0;
 
     const st = new Date().getTime();
+    let ts = 0;
 
-    const update = (c, x) => {
-      c.width|=0;
-
+    const input = () => {
       const gamepads = navigator.getGamepads();
 
       if (gamepads.length > 0 && gamepads[0]) {
-        const  gamepad1 = gamepads[0];
+        const gamepad1 = gamepads[0];
 
         const g1y = gamepad1.axes[1];
 
@@ -45,14 +43,30 @@
           }
         }
       }
+    };
+
+    const draw = (c, x) => {
+      c.width |= 0;
 
       x.fillRect(o,left,w,l);
       x.fillRect(bottom, c.height-w-o,l,w);
       x.fillRect(c.width-w-o,right,w,l);
 
-      const t = (new Date().getTime()-st)/1000;
-      const ts = Math.round(t*s);
       x.fillRect(ts,ts,w,w);
+    };
+
+    const simulate = () => {
+      const t = (new Date().getTime()-st)/1000;
+
+      ts = Math.round(t*speed*speed*2);
+    };
+
+    const update = (c, x) => {
+      input();
+
+      simulate();
+
+      draw(c, x);
 
       requestAnimationFrame(() => {
         update(c, x);
@@ -61,15 +75,15 @@
 
     const start = () => {
       const c = document.getElementById("c");
-      c.width=window.innerWidth;
-      c.height=window.innerHeight;
+      c.width = window.innerWidth;
+      c.height = window.innerHeight;
 
       const x = c.getContext("2d");
 
       c.onmousemove = (d) => {
         const cx = d.clientX * c.width / c.clientWidth;
 
-        bottom=cx-w*2;
+        bottom = cx-w*2;
       };
 
       requestAnimationFrame(() => {
